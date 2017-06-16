@@ -1,35 +1,34 @@
 #' Roll Up Contiguous Data
 #'
-#' Creates a plot of the crayon colors in \code{\link{brocolors}}
+#' Rolls up contiguous data time windows based on a set \code{start_end_log}
 #'
-#' @param method2order method to order colors (\code{"hsv"} or \code{"cluster"})
-#' @param cex character expansion for the text
-#' @param mar margin paramaters; vector of length 4 (see \code{\link[graphics]{par}})
+#' @param data a dataframe with attributes:id, dtstart, dtend
+#' @param start_end_lag defined lag between the end time and the following start
+#' time in days. Set to 1 (day) as default.
 #'
-#' @return None
+#' @return data is returned in a tibble
 #'
 #' @examples
 #' \dontrun{data_roll_up(data)}
 #'
 #' @export
-data_roll_up <- function(data) {
+data_roll_up <- function(data, start_end_lag = 1) {
   data %>%
-    dplyr::mutate( FLAG = ifelse( dtstart != lag(dtend) + 1  | is.na(lag(dtend)) , 1 , 0)) %>%
-    dplyr::mutate( GROUP = cumsum(FLAG)) %>%
-    dplyr::group_by(id, GROUP) %>%
-    dplyr::summarise( START = min(dtstart) , FINISH = max(dtend)) %>%
-    dplyr::select(-GROUP)
+    dplyr::mutate( flag = ifelse( dtstart != lag(dtend) + start_end_lag  | is.na(lag(dtend)) , 1 , 0)) %>%
+    dplyr::mutate( group = cumsum(flag)) %>%
+    dplyr::group_by(id, group) %>%
+    dplyr::summarise( dtstart = min(dtstart) , dtend = max(dtend)) %>%
+    dplyr::select(-group)
 }
 
 #' Read in Data
 #'
-#' Creates a plot of the crayon colors in \code{\link{brocolors}}
+#' Reads in rds or csv data
 #'
-#' @param method2order method to order colors (\code{"hsv"} or \code{"cluster"})
-#' @param cex character expansion for the text
-#' @param mar margin paramaters; vector of length 4 (see \code{\link[graphics]{par}})
+#' @param filepath the filepath to the raw data
+#' @param filetype a character for the file extension ("csv" or "RDS")
 #'
-#' @return None
+#' @return tibble of data or an error for invalid file extensions
 #'
 #' @examples
 #'
@@ -43,6 +42,9 @@ read_data <- function(filepath, filetype) {
   }
   else if (tolower(filetype) == "csv") {
     readr::read_csv(filepath)
+  }
+  else{
+    message("Error: invalid filetype chosen")
   }
 
 }

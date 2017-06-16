@@ -7,17 +7,15 @@
 read_data(filepath, filetype)
 }
 \arguments{
-\item{method2order}{method to order colors (\code{"hsv"} or \code{"cluster"})}
+\item{filepath}{the filepath to the raw data}
 
-\item{cex}{character expansion for the text}
-
-\item{mar}{margin paramaters; vector of length 4 (see \code{\link[graphics]{par}})}
+\item{filetype}{a character for the file extension ("csv" or "RDS")}
 }
 \value{
-None
+tibble of data or an error for invalid file extensions
 }
 \description{
-Creates a plot of the crayon colors in \code{\link{brocolors}}
+Reads in rds or csv data
 }
 \examples{
 

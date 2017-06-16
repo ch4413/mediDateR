@@ -1,6 +1,6 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "Working with MediDateR"
+author: "Christopher Hughes"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -9,50 +9,64 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+MediDateR is a package for working with medical-style data. The workhorse function is \code{data_roll_up}. This rolls up contiguous data time windows based on a set \code{start_end_log}.
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+## Functions
 
-## Vignette Info
+### \code{read_data}
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+Reads in rds or csv data
 
-## Styles
+\code{filepath} the filepath to the raw data
+\code{filetype} a character for the file extension ("csv" or "RDS")
 
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+Tibble of data or an error for invalid file extensions
 
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
+### \code{data_roll_up}
 
-## Figures
+Rolls up contiguous data time windows based on a set \code{start_end_log}
 
-The figure sizes have been customised so that you can easily put two images side-by-side. 
+\code{data} a dataframe with attributes:id, dtstart, dtend
+\code{start_end_lag} defined lag between the end time and the following start time in days. Set to 1 (day) as default.
 
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+Data is returned in a tibble
+
+## Example
+
+You can take a table of data and roll it up.
+
+```{r}
+library(dplyr)
+library(mediDateR)
+
+data_t <- tibble(
+   id = c(1,1,1,1,2,2,3,3),
+   dtstart = c(1,8,14,16,17,22,29,33 ),
+   dtend = c(8,14,16,17,19,24,33,35)
+)
+knitr::kable(data_t)
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
+As there are overlapping values the start_end_lag set to 0 gives 4 separate time windows from the tibble data_t
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
+```{r}
 
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+data_roll_default <- data_roll_up(data_t, start_end_lag = 0)
+knitr::kable(data_roll_default)
 
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
 ```
 
-Also a quote using `>`:
+Without a default, \code{data_roll_up} will return the same data as the default lag is set to 1 and there is no lag between any of the start and end times.
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+```{r}
+
+# start_end_lag is not set so the default value, 1, is used.
+data_roll_default <- data_roll_up(data_t)
+knitr::kable(data_roll_default)
+
+```
+
+
+For updates and infomation go to:
+
+([MediDateR on GitHub](https://github.com/ch4413/medidater))

@@ -3,6 +3,7 @@ Type: Package
 Title: What the Package Does (Title Case)
 Version: 1.0.0
 Imports: readr, dplyr, stats
+Depends: magrittr
 Author: Chris Hughes
 Maintainer: Chris Hughes <christopher.hughes@bath.edu>
 Description: More about what it does (maybe more than one line)

@@ -4,20 +4,19 @@
 \alias{data_roll_up}
 \title{Roll Up Contiguous Data}
 \usage{
-data_roll_up(data)
+data_roll_up(data, start_end_lag = 1)
 }
 \arguments{
-\item{method2order}{method to order colors (\code{"hsv"} or \code{"cluster"})}
+\item{data}{a dataframe with attributes:id, dtstart, dtend}
 
-\item{cex}{character expansion for the text}
-
-\item{mar}{margin paramaters; vector of length 4 (see \code{\link[graphics]{par}})}
+\item{start_end_lag}{defined lag between the end time and the following start
+time in days. Set to 1 (day) as default.}
 }
 \value{
-None
+data is returned in a tibble
 }
 \description{
-Creates a plot of the crayon colors in \code{\link{brocolors}}
+Rolls up contiguous data time windows based on a set \code{start_end_log}
 }
 \examples{
 \dontrun{data_roll_up(data)}
