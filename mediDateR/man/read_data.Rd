@@ -4,7 +4,7 @@
 \alias{read_data}
 \title{Read in Data}
 \usage{
-read_data(filepath, filetype)
+read_data(filepath, filetype = "rds")
 }
 \arguments{
 \item{filepath}{the filepath to the raw data}

@@ -40,7 +40,7 @@ data_roll_up <- function(data, start_end_lag = 1) {
 #' \dontrun{read_data(filepath, filetype)}
 #'
 #' @export
-read_data <- function(filepath, filetype) {
+read_data <- function(filepath, filetype = "rds") {
 
   if (tolower(filetype) == "rds") {
     readr::read_rds(filepath)
