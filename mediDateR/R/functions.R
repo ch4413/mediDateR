@@ -14,7 +14,12 @@
 #' @export
 data_roll_up <- function(data, start_end_lag = 1) {
   data %>%
-    dplyr::mutate( flag = ifelse( dtstart != lag(dtend) + start_end_lag  | is.na(lag(dtend)) , 1 , 0)) %>%
+    dplyr::arrange(id, dtstart) %>%
+    dplyr::mutate(bed = ifelse(id == lag(id) & dtstart <= lag(dtend), 1, 0)) %>%
+    dplyr::filter(is.na(bed) | bed != 1) %>%
+    dplyr::mutate( flag =
+                     ifelse( dtstart != lag(dtend) + start_end_lag | is.na(lag(dtend)),
+                             1 , 0)) %>%
     dplyr::mutate( group = cumsum(flag)) %>%
     dplyr::group_by(id, group) %>%
     dplyr::summarise( dtstart = min(dtstart) , dtend = max(dtend)) %>%
